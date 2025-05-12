@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-using EasyType.Models;
+using EasyType.Models; 
 using EasyType.Views;
 
 namespace EasyType.ViewModels
@@ -14,7 +14,6 @@ namespace EasyType.ViewModels
     {
         private readonly AppState _appState;
         private readonly TextProvider _textProvider;
-        private readonly TrainingHistory _history;
         private readonly DispatcherTimer _timer = new();
 
         private string _userInput = string.Empty;
@@ -35,7 +34,6 @@ namespace EasyType.ViewModels
         {
             _appState = new AppState();
             _textProvider = new TextProvider();
-            _history = new TrainingHistory(); 
 
             StartCommand = new RelayCommand(_ => StartTest(), _ => !_appState.IsActive);
             ResetCommand = new RelayCommand(_ => ResetTest(), _ => _appState.IsActive || _appState.RemainingTime < _appState.TestDurationSeconds);
@@ -101,6 +99,7 @@ namespace EasyType.ViewModels
             var settingsWindow = new SettingsWindow(_appState, _textProvider);
             if (settingsWindow.ShowDialog() == true)
             {
+
                 (StartCommand as RelayCommand)?.RaiseCanExecuteChanged();
                 (ResetCommand as RelayCommand)?.RaiseCanExecuteChanged();
             }
@@ -139,11 +138,7 @@ namespace EasyType.ViewModels
             _timer.Stop();
             _appState.IsActive = false;
 
-            var result = new TrainingResult(_appState);
-            _history.AddResult(result);
-
-
-            var resultWindow = new ResultWindow(result);
+            var resultWindow = new ResultWindow(new TrainingResult(_appState)); 
             if (Application.Current.MainWindow != null)
             {
                 resultWindow.Owner = Application.Current.MainWindow;
