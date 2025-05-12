@@ -1,3 +1,3 @@
-"# Simple" 
+"# EasyType" 
 "# EasyType" 
 "# EasyType" 
