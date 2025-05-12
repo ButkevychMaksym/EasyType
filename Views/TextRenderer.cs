@@ -41,7 +41,7 @@ namespace EasyType.Views
 
             if (userInput.Length > 0 && userInput.Length - 1 < _characterRuns.Count)
             {
-                // Якщо курсор змінив позицію або текст оновився, перерендерити відповідні символи
+
             }
 
 

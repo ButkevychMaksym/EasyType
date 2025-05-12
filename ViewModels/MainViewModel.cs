@@ -35,7 +35,7 @@ namespace EasyType.ViewModels
         {
             _appState = new AppState();
             _textProvider = new TextProvider();
-            _history = new TrainingHistory(); // Переконайтеся, що TrainingHistory існує
+            _history = new TrainingHistory(); 
 
             StartCommand = new RelayCommand(_ => StartTest(), _ => !_appState.IsActive);
             ResetCommand = new RelayCommand(_ => ResetTest(), _ => _appState.IsActive || _appState.RemainingTime < _appState.TestDurationSeconds);
@@ -101,7 +101,6 @@ namespace EasyType.ViewModels
             var settingsWindow = new SettingsWindow(_appState, _textProvider);
             if (settingsWindow.ShowDialog() == true)
             {
-                // Можливо, оновити відображення, якщо налаштування впливають на поточний тест
                 (StartCommand as RelayCommand)?.RaiseCanExecuteChanged();
                 (ResetCommand as RelayCommand)?.RaiseCanExecuteChanged();
             }
@@ -120,7 +119,7 @@ namespace EasyType.ViewModels
             _appState.CurrentText = _textProvider.GetRandomText(_appState.SelectedLanguage, _appState.SelectedTextMode);
             if (string.IsNullOrEmpty(_appState.CurrentText))
             {
-                _appState.CurrentText = "Не вдалося завантажити текст."; // Fallback if TextProvider returns empty
+                _appState.CurrentText = "Не вдалося завантажити текст."; 
             }
 
             UserInput = string.Empty;
@@ -208,8 +207,6 @@ namespace EasyType.ViewModels
             }
             else if (UserInput.Length > targetText.Length)
             {
-                // Дозволити користувачу набирати більше символів, ніж у тексті,
-                // але не враховувати їх у підрахунку correct/incorrect.
                 OnPropertyChanged(nameof(DisplayText));
             }
 

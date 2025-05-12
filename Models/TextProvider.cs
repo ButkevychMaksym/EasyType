@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions; // Цей using потрібен для Regex
+using System.Text.RegularExpressions; 
 
 namespace EasyType.Models
 {
@@ -11,7 +11,7 @@ namespace EasyType.Models
         {
             {"Українська", new List<string> { "слово", "тест", "програма", "швидкість", "набір", "мова", "комп'ютер", "клавіатура", "практика", "результат", "аналіз", "система", "додаток", "кодування", "розробка", "алгоритм", "логіка", "технологія", "інформація", "дані", "мережі", "сервер", "клієнт", "інтерфейс", "користувач", "функція", "змінна", "цикл", "масив", "об'єкт", "клас", "успіх", "прогрес", "збільшення", "зниження", "точний", "коректний", "відповідь", "питання", "знання", "вміння", "досвід", "навчання", "рішення", "проблема", "допомога", "підтримка", "керівництво", "інструкція", "посібник", "документ", "звіт", "дані", "файл", "папка", "диск", "пам'ять", "процесор", "екран", "мишка", "принтер", "сканер", "динамік", "мікрофон", "камера", "програмне", "забезпечення", "апаратне", "безпека", "захист", "шифрування", "аутентифікація", "авторизація", "визначення", "ідентифікація", "мережевий", "протокол", "швидкісний", "доступ", "бездротовий", "бездротове", "з'єднання", "маршрутизатор", "комутатор", "фаєрвол", "вірус", "антивірус", "фішинг", "спам", "троян", "ботнет", "руткіт", "шпигунське", "програмне", "забезпечення", "рекламне", "операційна", "система", "ядро", "оболонка", "файлова", "система", "директорія", "команда", "термінал", "консоль", "скрипт", "бібліотека", "фреймворк", "API", "сервіс", "процес", "потік", "сесія", "кеш", "буфер", "черга", "стек", "дерево", "граф", "хеш", "таблиця", "пошук", "сортування", "шифрування", "дешифрування", "компресія", "декомпресія", "резервне", "копіювання", "відновлення", "журнал", "подій", "трасування", "налагодження", "тестування", "розгортання", "конфігурація", "параметр", "опція", "значення", "типовий", "додатковий", "налаштування", "модифікація", "оновлення", "версія", "реліз", "виправлення", "помилка", "збій", "відмова", "продуктивність", "оптимізація", "масштабованість", "надійність", "доступність", "безпечність", "розширення", "інтеграція", "взаємодія", "комунікація", "транзакція", "реплікація", "синхронізація", "асинхронний", "паралельний", "розподілений", "хмарний", "віртуалізація", "контейнер", "мікросервіси", "моноліт", "рефакторинг", "реліз-менеджмент", "контроль", "версій", "розгортання", "CI/CD", "DevOps", "Agile", "Scrum", "Kanban", "Waterfall", "методологія", "планування", "аналіз", "дизайн", "реалізація", "тестування", "впровадження", "підтримка", "моніторинг" } },
             {"English", new List<string> { "the", "be", "to", "of", "and", "a", "in", "that", "have", "I", "it", "for", "not", "on", "with", "he", "as", "you", "do", "at", "this", "but", "his", "by", "from", "we", "say", "her", "she", "or", "will", "my", "one", "all", "would", "there", "their", "what", "so", "up", "out", "if", "about", "who", "get", "which", "go", "me", "when", "make", "can", "like", "time", "no", "just", "him", "know", "take", "people", "into", "year", "your", "good", "some", "could", "them", "see", "other", "than", "then", "now", "look", "only", "come", "its", "over", "think", "also", "back", "after", "use", "two", "how", "our", "work", "first", "well", "way", "even", "new", "want", "because", "any", "these", "give", "day", "most", "us" } },
-            {"Code", new List<string>() } // Для "Code" немає слів для режиму "Окремі слова"
+            {"Code", new List<string>() } 
         };
 
         private readonly Dictionary<string, List<string>> _hardcodedFullTextsByLanguage = new()
@@ -26,7 +26,7 @@ namespace EasyType.Models
                 "Programming is an art that requires practice and creativity. Algorithms are the foundation of any complex program, determining its efficiency and logic. Learning new technologies never stops, constantly opening new horizons. Clean code always looks like someone who cares about it wrote it. First solve the problem, then write the code. Simplicity is the key to reliability. Any fool can write code that a computer understands. Good programmers write code that people understand. The best way to predict the future is to create it. Technology is everything that didn't exist when you were born. The most important thing in communication is to hear what was not said. It's easy to talk, show me the code. The future belongs to those who believe in the beauty of their dreams. Don't be afraid to make mistakes, because you learn from them. Program as if the person who will maintain your code is an armed psychopath who knows where you live. Test your code, otherwise your users will.",
                 "The quick brown fox jumps over the lazy dog. This sentence is famous for containing all the letters of the English alphabet. It is often used to test typewriters, keyboards, and fonts. The phrase is a pangram. Another common pangram is \"Pack my box with five dozen liquor jugs.\" These short sentences are useful for quick checks of text rendering and input devices."
             }},
-            {"Code", new List<string> // ЗМІНЕНО: Код перетворено на послідовний текст
+            {"Code", new List<string> 
             {
                 TextProvider.FormatCodeAsSingleLine("public static void Main(string[] args)\n{\n    Console.WriteLine(\"Hello, World!\");\n    for (int i = 0; i < 10; i++)\n    {\n        Console.WriteLine($\"Count: {i}\");\n    }\n}"),
                 TextProvider.FormatCodeAsSingleLine("function factorial(n) {\n    if (n === 0) {\n        return 1;\n    }\n    return n * factorial(n - 1);\n}\nconsole.log(factorial(5)); // Output: 120")
@@ -42,13 +42,13 @@ namespace EasyType.Models
 
         public string GetRandomText(string language, string textMode)
         {
-            // Simplified language and mode checks
+
             if (string.IsNullOrEmpty(language) || string.IsNullOrEmpty(textMode))
             {
                 return "Не вдалося завантажити текст: невідома мова або режим.";
             }
 
-            // ЗМІНЕНО: Додано спеціальну перевірку для мови "Code" та режиму "Окремі слова"
+
             if (language == "Code" && textMode == "Окремі слова")
             {
                 return "Для мови \"Code\" немає можливості вибирати режим тексту \"Окремі слова\".";
@@ -65,11 +65,11 @@ namespace EasyType.Models
                 }
                 else
                 {
-                    // Цей рядок залишаємо, він спрацює для інших мов, де справді немає достатньо слів
+
                     return "Немає достатньо слів для режиму 'Окремі слова' для обраної мови.";
                 }
             }
-            else // Assume it's "Цілі абзаци"
+            else 
             {
                 if (_hardcodedFullTextsByLanguage.TryGetValue(language, out var fullTexts) && fullTexts.Count > 0)
                 {
@@ -82,12 +82,11 @@ namespace EasyType.Models
             }
         }
 
-        // ЗМІНЕНО: Метод став статичним
+
         private static string FormatCodeAsSingleLine(string code)
         {
-            // Замінюємо переноси рядків на пробіли
             string result = code.Replace("\n", " ");
-            // Замінюємо кілька пробілів на один пробіл
+
             result = Regex.Replace(result, @"\s+", " ").Trim();
             return result;
         }

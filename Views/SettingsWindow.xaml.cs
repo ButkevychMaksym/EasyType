@@ -45,7 +45,6 @@ namespace EasyType.Views
                 OnPropertyChanged();
             }
         }
-        // ЗМІНЕНО: Оновлено назви режимів тексту для узгодженості
         public System.Collections.Generic.List<string> AvailableLanguages { get; }
         public System.Collections.Generic.List<string> TextModes { get; } = new() { "Окремі слова", "Цілі абзаци" };
 

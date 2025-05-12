@@ -8,14 +8,13 @@ namespace EasyType.Models
     {
         private int _testDurationSeconds = 60;
         private string _selectedLanguage = "Українська";
-        // ЗМІНЕНО: Виправлено назву режиму за замовчуванням
         private string _selectedTextMode = "Окремі слова";
         private string _currentText = string.Empty;
         private bool _isActive = false;
         private int _correctChars = 0;
         private int _incorrectChars = 0;
         private DateTime _startTime;
-        private int _remainingTime; // Час, що залишився в секундах
+        private int _remainingTime; 
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -28,7 +27,7 @@ namespace EasyType.Models
                 {
                     _testDurationSeconds = value;
                     OnPropertyChanged();
-                    RemainingTime = value; // Оновлюємо RemainingTime при зміні TestDurationSeconds
+                    RemainingTime = value; 
                 }
             }
         }
@@ -147,12 +146,12 @@ namespace EasyType.Models
         {
             get
             {
-                if (!IsActive && TestDurationSeconds == RemainingTime && CorrectChars == 0) return 0; // Test not started yet
+                if (!IsActive && TestDurationSeconds == RemainingTime && CorrectChars == 0) return 0; 
 
                 double elapsedSeconds = TestDurationSeconds - RemainingTime;
                 if (elapsedSeconds <= 0) return 0;
 
-                // WPM = (Correct Chars / 5) / (Time in Minutes)
+
                 return (CorrectChars / 5.0) / (elapsedSeconds / 60.0);
             }
         }
@@ -174,7 +173,7 @@ namespace EasyType.Models
             IncorrectChars = 0;
             RemainingTime = TestDurationSeconds;
             CurrentText = string.Empty;
-            //StartTime = default; // or DateTime.Now if you want it initialized on reset
+
         }
 
         protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)

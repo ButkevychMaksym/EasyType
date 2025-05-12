@@ -40,7 +40,6 @@ namespace EasyType.Models
                 }
                 catch (JsonException ex)
                 {
-                    // Log the error or handle it appropriately
                     Console.WriteLine($"Error loading training history: {ex.Message}");
                     return new List<TrainingResult>();
                 }
@@ -57,7 +56,6 @@ namespace EasyType.Models
             }
             catch (JsonException ex)
             {
-                // Log the error or handle it appropriately
                 Console.WriteLine($"Error saving training history: {ex.Message}");
             }
         }
