@@ -1,0 +1,99 @@
+﻿<Window x:Class="EasyType.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EasyType.Views"
+        xmlns:vm="clr-namespace:EasyType.ViewModels"
+        mc:Ignorable="d"
+        Title="EasyType - Тест швидкості друку" Height="750" Width="1200"
+        Background="#282C34">
+
+    <Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>
+
+    <Window.Resources>
+        <local:InverseBooleanConverter x:Key="InverseBoolConverter"/>
+
+        <Style x:Key="ButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="150"/>
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Foreground" Value="#282C34"/>
+        </Style>
+
+        <Style x:Key="TextInputStyle" TargetType="TextBox">
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Padding" Value="7.5"/>
+            <Setter Property="Background" Value="#21252B"/>
+            <Setter Property="BorderBrush" Value="#3E4451"/>
+            <Setter Property="BorderThickness" Value="0.5"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontFamily" Value="Consolas"/>
+            <Setter Property="Foreground" Value="#61AFEF"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+
+        <Style x:Key="DisplayTextStyle" TargetType="RichTextBox">
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Padding" Value="7.5"/>
+            <Setter Property="Foreground" Value="#ABB2BF"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontFamily" Value="Consolas"/>
+            <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="0.4*"/>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="20" HorizontalAlignment="Center">
+            <TextBlock FontSize="24" FontWeight="Bold" Foreground="#61AFEF" HorizontalAlignment="Center">
+                <Run Text="Час: " Foreground="#ABB2BF"/>
+                <Run Text="{Binding AppState.RemainingTime, Mode=OneWay}" Foreground="#ABB2BF"/>
+                <Run Text=" сек | " Foreground="#ABB2BF"/>
+                <Run Text="WPM: " Foreground="#ABB2BF"/>
+                <Run Text="{Binding AppState.WPM, StringFormat=F0, Mode=OneWay}" Foreground="#ABB2BF"/>
+                <Run Text=" | " Foreground="#ABB2BF"/>
+                <Run Text="Точність: " Foreground="#ABB2BF"/>
+                <Run Text="{Binding AppState.Accuracy, StringFormat=F0, Mode=OneWay}" Foreground="#ABB2BF"/>
+                <Run Text="%" Foreground="#ABB2BF"/>
+            </TextBlock>
+        </StackPanel>
+
+        <Border Grid.Row="1"
+                Background="#21252B" BorderBrush="#3E4451" BorderThickness="0.5"
+                CornerRadius="5">
+            <RichTextBox x:Name="DisplayText" Style="{StaticResource DisplayTextStyle}"/>
+        </Border>
+
+        <TextBox Grid.Row="2" x:Name="InputText" Style="{StaticResource TextInputStyle}"
+                 IsEnabled="{Binding AppState.IsActive}"
+                 Text="{Binding UserInput, UpdateSourceTrigger=PropertyChanged}"
+                 TextWrapping="Wrap"/>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="20">
+            <Button Content="Старт" Style="{StaticResource ButtonStyle}"
+                    Background="#98C379" Command="{Binding StartCommand}"
+                    IsEnabled="{Binding AppState.IsActive, Converter={StaticResource InverseBoolConverter}}"/>
+            <Button Content="Скинути" Style="{StaticResource ButtonStyle}"
+                    Background="#E06C75" Command="{Binding ResetCommand}"
+                    IsEnabled="{Binding AppState.IsActive}"/>
+            <Button Content="Налаштування" Style="{StaticResource ButtonStyle}"
+                    Background="#61AFEF" Command="{Binding OpenSettingsCommand}"/>
+        </StackPanel>
+    </Grid>
+</Window>
