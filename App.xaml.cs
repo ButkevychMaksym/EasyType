@@ -4,16 +4,14 @@ using System.Windows;
 
 namespace EasyType
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
+    
     public partial class App : Application
     {
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            // Ensure application directory exists for saving history
+            
             string appDataPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                 "EasyType");
@@ -23,10 +21,10 @@ namespace EasyType
                 Directory.CreateDirectory(appDataPath);
             }
 
-            // Set the working directory to ensure history file is saved in the right location
+            
             Directory.SetCurrentDirectory(appDataPath);
 
-            // Handle unhandled exceptions
+            
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
         }
 
@@ -39,7 +37,7 @@ namespace EasyType
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
 
-            // Log the error
+           
             try
             {
                 string logFile = Path.Combine(
@@ -51,7 +49,7 @@ namespace EasyType
             }
             catch
             {
-                // If we can't log, just continue with shutdown
+                
             }
         }
     }

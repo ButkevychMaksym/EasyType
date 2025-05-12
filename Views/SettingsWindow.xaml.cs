@@ -45,9 +45,9 @@ namespace EasyType.Views
                 OnPropertyChanged();
             }
         }
-
+        // ЗМІНЕНО: Оновлено назви режимів тексту для узгодженості
         public System.Collections.Generic.List<string> AvailableLanguages { get; }
-        public System.Collections.Generic.List<string> TextModes { get; } = new() { "Випадкові слова", "Повний текст" };
+        public System.Collections.Generic.List<string> TextModes { get; } = new() { "Окремі слова", "Цілі абзаци" };
 
         public SettingsWindow(AppState appState, TextProvider textProvider)
         {
@@ -58,7 +58,7 @@ namespace EasyType.Views
 
             TestDuration = _appState.TestDurationSeconds;
             SelectedLanguage = _appState.SelectedLanguage;
-            SelectedTextMode = _appState.SelectedTextMode; // Встановлюємо поточний режим
+            SelectedTextMode = _appState.SelectedTextMode;
 
             AvailableLanguages = _textProvider.GetAvailableLanguages();
         }
@@ -67,7 +67,7 @@ namespace EasyType.Views
         {
             _appState.TestDurationSeconds = TestDuration;
             _appState.SelectedLanguage = SelectedLanguage;
-            _appState.SelectedTextMode = SelectedTextMode; // Зберігаємо обраний режим
+            _appState.SelectedTextMode = SelectedTextMode;
             DialogResult = true;
             Close();
         }

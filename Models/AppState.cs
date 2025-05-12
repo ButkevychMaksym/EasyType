@@ -6,24 +6,18 @@ namespace EasyType.Models
 {
     public class AppState : INotifyPropertyChanged
     {
-        private int _testDurationSeconds;
-        private int _remainingTime;
-        private bool _isActive;
+        private int _testDurationSeconds = 60;
+        private string _selectedLanguage = "Українська";
+        // ЗМІНЕНО: Виправлено назву режиму за замовчуванням
+        private string _selectedTextMode = "Окремі слова";
         private string _currentText = string.Empty;
-        private int _correctChars;
-        private int _incorrectChars;
+        private bool _isActive = false;
+        private int _correctChars = 0;
+        private int _incorrectChars = 0;
         private DateTime _startTime;
-        private string _selectedLanguage = "English";
-        private string _selectedTextMode = "Випадкові слова"; // Додана властивість
+        private int _remainingTime; // Час, що залишився в секундах
 
         public event PropertyChangedEventHandler? PropertyChanged;
-
-        public AppState()
-        {
-            TestDurationSeconds = 60;
-            RemainingTime = TestDurationSeconds;
-            IsActive = false;
-        }
 
         public int TestDurationSeconds
         {
@@ -33,33 +27,33 @@ namespace EasyType.Models
                 if (_testDurationSeconds != value)
                 {
                     _testDurationSeconds = value;
-                    RemainingTime = value;
+                    OnPropertyChanged();
+                    RemainingTime = value; // Оновлюємо RemainingTime при зміні TestDurationSeconds
+                }
+            }
+        }
+
+        public string SelectedLanguage
+        {
+            get => _selectedLanguage;
+            set
+            {
+                if (_selectedLanguage != value)
+                {
+                    _selectedLanguage = value;
                     OnPropertyChanged();
                 }
             }
         }
 
-        public int RemainingTime
+        public string SelectedTextMode
         {
-            get => _remainingTime;
+            get => _selectedTextMode;
             set
             {
-                if (_remainingTime != value)
+                if (_selectedTextMode != value)
                 {
-                    _remainingTime = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        public bool IsActive
-        {
-            get => _isActive;
-            set
-            {
-                if (_isActive != value)
-                {
-                    _isActive = value;
+                    _selectedTextMode = value;
                     OnPropertyChanged();
                 }
             }
@@ -73,6 +67,19 @@ namespace EasyType.Models
                 if (_currentText != value)
                 {
                     _currentText = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public bool IsActive
+        {
+            get => _isActive;
+            set
+            {
+                if (_isActive != value)
+                {
+                    _isActive = value;
                     OnPropertyChanged();
                 }
             }
@@ -102,33 +109,8 @@ namespace EasyType.Models
                 {
                     _incorrectChars = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(WPM));
                     OnPropertyChanged(nameof(Accuracy));
-                }
-            }
-        }
-
-        public string SelectedLanguage
-        {
-            get => _selectedLanguage;
-            set
-            {
-                if (_selectedLanguage != value)
-                {
-                    _selectedLanguage = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        public string SelectedTextMode // Додана властивість
-        {
-            get => _selectedTextMode;
-            set
-            {
-                if (_selectedTextMode != value)
-                {
-                    _selectedTextMode = value;
-                    OnPropertyChanged();
                 }
             }
         }
@@ -146,14 +128,32 @@ namespace EasyType.Models
             }
         }
 
+        public int RemainingTime
+        {
+            get => _remainingTime;
+            set
+            {
+                if (_remainingTime != value)
+                {
+                    _remainingTime = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(WPM));
+                    OnPropertyChanged(nameof(Accuracy));
+                }
+            }
+        }
+
         public double WPM
         {
             get
             {
-                int totalSeconds = TestDurationSeconds - RemainingTime;
-                if (totalSeconds == 0) return 0;
-                double minutes = totalSeconds / 60.0;
-                return CorrectChars / 5.0 / minutes;
+                if (!IsActive && TestDurationSeconds == RemainingTime && CorrectChars == 0) return 0; // Test not started yet
+
+                double elapsedSeconds = TestDurationSeconds - RemainingTime;
+                if (elapsedSeconds <= 0) return 0;
+
+                // WPM = (Correct Chars / 5) / (Time in Minutes)
+                return (CorrectChars / 5.0) / (elapsedSeconds / 60.0);
             }
         }
 
@@ -162,8 +162,8 @@ namespace EasyType.Models
             get
             {
                 int totalChars = CorrectChars + IncorrectChars;
-                if (totalChars == 0) return 100.0;
-                return (double)CorrectChars / totalChars * 100.0;
+                if (totalChars == 0) return 0;
+                return (double)CorrectChars / totalChars * 100;
             }
         }
 
@@ -173,16 +173,8 @@ namespace EasyType.Models
             CorrectChars = 0;
             IncorrectChars = 0;
             RemainingTime = TestDurationSeconds;
-        }
-
-        public void ToggleTestDuration()
-        {
-            TestDurationSeconds = TestDurationSeconds switch
-            {
-                30 => 60,
-                60 => 120,
-                _ => 30
-            };
+            CurrentText = string.Empty;
+            //StartTime = default; // or DateTime.Now if you want it initialized on reset
         }
 
         protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)

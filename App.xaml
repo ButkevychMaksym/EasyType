@@ -6,7 +6,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!-- Application-wide resources -->
+               
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

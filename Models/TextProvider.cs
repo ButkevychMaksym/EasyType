@@ -1,69 +1,95 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions; // Цей using потрібен для Regex
 
 namespace EasyType.Models
 {
     public class TextProvider
     {
-        private readonly Random _random = new();
-        private readonly Dictionary<string, List<string>> _textSamplesByLanguage = new()
+        private readonly Dictionary<string, List<string>> _hardcodedSeparateWordsByLanguage = new()
         {
-            ["English"] = new List<string>
-            {
-                "The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How razorback-jumping frogs can level six piqued gymnasts. The wizard quickly jinxed the gnarled fox before it vanished. Now is the time for all good men to come to the aid of their country. A journey of a thousand miles begins with a single step. All that glitters is not gold. Look before you leap. Curiosity killed the cat. Don't count your chickens before they hatch. Every cloud has a silver lining. Great minds think alike. Haste makes waste. If it ain't broke, don't fix it.",
-                "Programming is a skill best acquired by practice and example rather than from books. Complex problems have simple, easy-to-understand wrong answers. Premature optimization is the root of all evil. Good code is its own best documentation. Make it work, make it right, make it fast. Clean code always looks like it was written by someone who cares. There are only two hard things in Computer Science: cache invalidation and naming things. Any fool can write code that a computer can understand. Good programmers write code that humans can understand. The best way to predict the future is to invent it. Technology is anything that wasn't around when you were born. The most important thing in communication is hearing what isn't said. Talk is cheap. Show me the code.",
-                "Coding is like poetry; it's not just about writing lines of code but about creating something beautiful that solves real problems efficiently. Clean code always looks like it was written by someone who cares. Make it work, make it right, make it fast. Simplicity is prerequisite for reliability. Any fool can write code that a computer can understand. Good programmers write code that humans can understand. The best way to predict the future is to invent it. The early bird gets the worm, but the second mouse gets the cheese. A penny saved is a penny earned. Actions speak louder than words. Where there's a will, there's a way. Practice makes perfect. All that glitters is not gold. Look before you leap. Better safe than sorry. If it ain't broke, don't fix it. A watched pot never boils. Better late than never. Birds of a feather flock together.",
-                "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it. Always code as if the guy who ends up maintaining your code will be a violent psychopath who knows where you live. Test your code, or the users will do it for you. To err is human, but to really foul things up requires a computer. Software is like entropy: It is difficult to grasp, weighs nothing, and always increases. First, solve the problem. Then, write the code. Simplicity is prerequisite for reliability. There are only two hard things in Computer Science: cache invalidation and naming things. Any fool can write code that a computer can understand. Good programmers write code that humans can understand. You should name a variable using the same care with which you name a first-born child.",
-                "The best way to predict the future is to invent it. Technology is anything that wasn't around when you were born. The most important thing in communication is hearing what isn't said. Talk is cheap. Show me the code. The future belongs to those who believe in the beauty of their dreams. The early bird gets the worm, but the second mouse gets the cheese. A penny saved is a penny earned. Actions speak louder than words. Where there's a will, there's a way. Practice makes perfect. All that glitters is not gold. Look before you leap. Better safe than sorry. If it ain't broke, don't fix it. A watched pot never boils. Better late than never. Birds of a feather flock together. The grass is always greener on the other side. Out of sight, out of mind. Absence makes the heart grow fonder. Curiosity killed the cat. Don't count your chickens before they hatch. Every cloud has a silver lining. Honesty is the best policy. Necessity is the mother of invention. Rome wasn't built in a day. Great minds think alike. Haste makes waste. If it ain't broke, don't fix it. Knowledge is power. Laughter is the best medicine. Look before you leap."
-            },
-            ["Code"] = new List<string>
-            {
-                "public static void Main(string[] args) { Console.WriteLine(\"Hello, World!\"); } try { // Some code } catch (Exception ex) { Console.WriteLine(ex.Message); } finally { // Cleanup } for (int i = 0; i < 10; i++) { Console.WriteLine(i); } if (condition) { // Do something } else { // Do something else } switch (variable) { case 1: // Code; break; default: // Code; break; } while (condition) { // Loop } do { // Loop } while (condition); for (int j = 0; j < 5; j++) { Console.WriteLine($\"Inner loop: {j}\"); } public class MyClass { public int MyProperty { get; set; } public MyClass(int value) { MyProperty = value; } } interface IMyInterface { void DoSomething(); } class MyImplementation : IMyInterface { public void DoSomething() { Console.WriteLine(\"Doing something...\"); } }",
-                "for (int i = 0; i < arr.Length; i++) { sum += arr[i]; } return sum / arr.Length; if (condition) { DoThis(); } else { DoThat(); } switch (variable) { case 1: // Code; break; default: // Code; break; } while (condition) { // Loop } do { // Loop } while (condition); public class Person { public string Name { get; set; } public int Age { get; set; } public Person(string name, int age) { Name = name; Age = age; } public void Greet() { Console.WriteLine($\"Hello, my name is {Name} and I am {Age} years old.\"); } } interface IAnimal { string MakeSound(); } class Dog : IAnimal { public string MakeSound() { return \"Woof!\"; } } class Cat : IAnimal { public string MakeSound() { return \"Meow!\"; } } List<string> names = new List<string>() { \"Alice\", \"Bob\", \"Charlie\" }; foreach (string name in names) { Console.WriteLine(name.ToUpper()); } Dictionary<string, int> ages = new Dictionary<string, int>() { { \"Alice\", 30 }, { \"Bob\", 25 }, { \"Charlie\", 35 } };",
-                "string filePath = \"data.txt\"; using (StreamReader reader = new StreamReader(filePath)) { string line; while ((line = reader.ReadLine()) != null) { Console.WriteLine(line); } } using (StreamWriter writer = new StreamWriter(\"output.txt\")) { writer.WriteLine(\"Hello from StreamWriter!\"); writer.WriteLine(\"This is another line.\"); } string anotherPath = \"config.json\"; using (StreamReader configReader = new StreamReader(anotherPath)) { string config = configReader.ReadToEnd(); Console.WriteLine(config); } int factorial(int n) { if (n == 0) { return 1; } else { return n * factorial(n - 1); } } // Recursive function example public static T Max<T>(T a, T b) where T : IComparable { return a.CompareTo(b) > 0 ? a : b; } // Generic method public static void Swap<T>(ref T a, ref T b) { (b, a) = (a, b); } // Generic swap method async Task<string> GetDataAsync(string url) { using (HttpClient client = new HttpClient()) { HttpResponseMessage response = await client.GetAsync(url); response.EnsureSuccessStatusCode(); return await response.Content.ReadAsStringAsync(); } }",
-                "interface IService { void Execute(); } class MyService : IService { public void Execute() { Console.WriteLine(\"Service executed\"); } } // Interface and class implementation abstract class Shape { public abstract double Area(); } class Circle : Shape { public double Radius { get; set; } public override double Area() { return Math.PI * Radius * Radius; } } class Rectangle : Shape { public double Width { get; set; } public double Height { get; set; } public override double Area() { return Width * Height; } } enum DayOfWeek { Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday } DayOfWeek today = DayOfWeek.Monday; Console.WriteLine(today);",
-                "Dictionary<string, int> ages = new Dictionary<string, int>() { { \"Alice\", 30 }, { \"Bob\", 25 }, { \"Charlie\", 35 }, { \"David\", 40 }, { \"Eve\", 28 } }; if (ages.ContainsKey(\"Alice\")) { Console.WriteLine(ages[\"Alice\"]); } // Dictionary usage foreach (var pair in ages) { Console.WriteLine($\"{pair.Key}: {pair.Value}\"); } ages[\"Kelly\"] = 31; ages.Remove(\"Bob\"); List<int> numbers = new List<int>() { 1, 2, 3, 4, 5 }; int first = numbers.First(); int last = numbers.Last(); int count = numbers.Count();"
-            },
-            ["Ukrainian"] = new List<string>
-            {
-                "Швидко пливе човен, весело б'є об хвилі. Завтра буде сонячний день, сповнений яскравого світла та тепла. Наша країна багата на талановитих людей, які своєю працею прославляють її. Вечірнє сонце сідає за обрій, розфарбовуючи небо в багряні кольори. Тихий вітер шепоче листю дерев. Учітесь, читайте, і чужому научайтесь, свого не цурайтесь. Книга - джерело знань. Мудрість приходить з роками. Рідна мова - не полова: за вітром не розвієш. Хто мови своєї цурається, той сам себе обкрадає. Слово - не горобець, вилетить - не спіймаєш. Краще гірка правда, ніж солодка брехня. Сім раз відмір, один раз відріж. Без труда нема плода. Дерево міцне корінням, а людина - знаннями.",
-                "Програмування - це мистецтво, яке потребує практики та творчості. Алгоритми є основою будь-якої складної програми, визначаючи її ефективність та логіку. Вивчення нових технологій ніколи не зупиняється, постійно відкриваючи нові горизонти. Чистий код завжди виглядає так, ніби його написав хтось, хто дбає про нього. Спочатку розв'яжи проблему, потім напиши код. Простота - запорука надійності. Будь-який дурень може написати код, який зрозуміє комп'ютер. Хороші програмісти пишуть код, який зрозуміють люди. Кращий спосіб передбачити майбутнє - це створити його. Технологія - це все, чого не було, коли ти народився. Найважливіше в спілкуванні - це почути те, що не було сказано. Говорити легко, покажи мені код. Майбутнє належить тим, хто вірить у красу своєї мрії. Не бійтеся робити помилки, адже на них вчаться. Програмуйте так, ніби людина, яка буде підтримувати ваш код, - це озброєний психопат, який знає, де ви живете. Тестуйте свій код, інакше це зроблять ваші користувачі.",
-                "Комп'ютерні науки відкривають безмежні можливості для розвитку людства. Інтернет став невід'ємною частиною сучасного життя, об'єднуючи людей з усього світу. Штучний інтелект змінює світ навколо нас, проникаючи в різні сфери діяльності. Майбутнє належить тим, хто вірить у красу своєї мрії. Найважливіше в спілкуванні - це почути те, що не було сказано. Говорити легко, покажи мені код. Кращий спосіб передбачити майбутнє - це створити його. Технологія - це все, чого не було, коли ти народився. Україна - незалежна та суверенна держава з багатою історією. Наша історія сповнена героїзму та боротьби за свободу і незалежність. Ми пишаємося нашою культурою та традиціями, які передаються з покоління в покоління. Рідна мова - це скарб, який потрібно берегти і шанувати. У ній мудрість віків і краса слова, що відображає душу народу. Не забуваймо своє коріння, адже воно живить нашу ідентичність. Природа України вражає своєю красою та різноманітністю ландшафтів. Карпати, Чорне море, безмежні степи - у нас є все для натхнення. Бережімо нашу планету, щоб зберегти цю красу для майбутніх поколінь. Київ - серце України, місто з багатою історією та культурою, що сягає глибини століть.",
-                "Рідна мова - це скарб, який потрібно берегти і шанувати. У ній мудрість віків і краса слова, що відображає душу народу. Не забуваймо своє коріння, адже воно живить нашу ідентичність. Природа України вражає своєю красою та різноманітністю ландшафтів. Карпати, Чорне море, безмежні степи - у нас є все для натхнення. Бережімо нашу планету, щоб зберегти цю красу для майбутніх поколінь. Київ - серце України, місто з багатою історією та культурою, що сягає глибини століть. Золоті ворота, Софійський собор, Андріївський узвіз - це лише деякі з його архітектурних та духовних перлин. Леся Українка - видатна українська поетеса і письменниця, чия творчість є невичерпним джерелом мудрості та патріотизму. Її поезія надихає та вражає своєю глибиною та силою духу. Тарас Шевченко - великий український поет і художник, чий «Кобзар» став символом національного відродження та боротьби за свободу. Українська кухня славиться своїми смачними та різноманітними стравами, які відображають багату історію та традиції нашого народу.",
-                "Київ - серце України, місто з багатою історією та культурою, що сягає глибини століть. Золоті ворота, Софійський собор, Андріївський узвіз - це лише деякі з його архітектурних та духовних перлин. Леся Українка - видатна українська поетеса і письменниця, чия творчість є невичерпним джерелом мудрості та патріотизму. Її поезія надихає та вражає своєю глибиною та силою духу. Тарас Шевченко - великий український поет і художник, чий «Кобзар» став символом національного відродження та боротьби за свободу. Українська кухня славиться своїми смачними та різноманітними стравами, які відображають багату історію та традиції нашого народу. Борщ, вареники, сало, галушки - це лише початок кулінарної подорожі. День Незалежності України - важливе свято для кожного українця, символ нашої свободи та самостійності. Ми відзначаємо нашу незалежність 24 серпня, вшановуючи героїв, які боролися за нашу волю."
-            }
+            {"Українська", new List<string> { "слово", "тест", "програма", "швидкість", "набір", "мова", "комп'ютер", "клавіатура", "практика", "результат", "аналіз", "система", "додаток", "кодування", "розробка", "алгоритм", "логіка", "технологія", "інформація", "дані", "мережі", "сервер", "клієнт", "інтерфейс", "користувач", "функція", "змінна", "цикл", "масив", "об'єкт", "клас", "успіх", "прогрес", "збільшення", "зниження", "точний", "коректний", "відповідь", "питання", "знання", "вміння", "досвід", "навчання", "рішення", "проблема", "допомога", "підтримка", "керівництво", "інструкція", "посібник", "документ", "звіт", "дані", "файл", "папка", "диск", "пам'ять", "процесор", "екран", "мишка", "принтер", "сканер", "динамік", "мікрофон", "камера", "програмне", "забезпечення", "апаратне", "безпека", "захист", "шифрування", "аутентифікація", "авторизація", "визначення", "ідентифікація", "мережевий", "протокол", "швидкісний", "доступ", "бездротовий", "бездротове", "з'єднання", "маршрутизатор", "комутатор", "фаєрвол", "вірус", "антивірус", "фішинг", "спам", "троян", "ботнет", "руткіт", "шпигунське", "програмне", "забезпечення", "рекламне", "операційна", "система", "ядро", "оболонка", "файлова", "система", "директорія", "команда", "термінал", "консоль", "скрипт", "бібліотека", "фреймворк", "API", "сервіс", "процес", "потік", "сесія", "кеш", "буфер", "черга", "стек", "дерево", "граф", "хеш", "таблиця", "пошук", "сортування", "шифрування", "дешифрування", "компресія", "декомпресія", "резервне", "копіювання", "відновлення", "журнал", "подій", "трасування", "налагодження", "тестування", "розгортання", "конфігурація", "параметр", "опція", "значення", "типовий", "додатковий", "налаштування", "модифікація", "оновлення", "версія", "реліз", "виправлення", "помилка", "збій", "відмова", "продуктивність", "оптимізація", "масштабованість", "надійність", "доступність", "безпечність", "розширення", "інтеграція", "взаємодія", "комунікація", "транзакція", "реплікація", "синхронізація", "асинхронний", "паралельний", "розподілений", "хмарний", "віртуалізація", "контейнер", "мікросервіси", "моноліт", "рефакторинг", "реліз-менеджмент", "контроль", "версій", "розгортання", "CI/CD", "DevOps", "Agile", "Scrum", "Kanban", "Waterfall", "методологія", "планування", "аналіз", "дизайн", "реалізація", "тестування", "впровадження", "підтримка", "моніторинг" } },
+            {"English", new List<string> { "the", "be", "to", "of", "and", "a", "in", "that", "have", "I", "it", "for", "not", "on", "with", "he", "as", "you", "do", "at", "this", "but", "his", "by", "from", "we", "say", "her", "she", "or", "will", "my", "one", "all", "would", "there", "their", "what", "so", "up", "out", "if", "about", "who", "get", "which", "go", "me", "when", "make", "can", "like", "time", "no", "just", "him", "know", "take", "people", "into", "year", "your", "good", "some", "could", "them", "see", "other", "than", "then", "now", "look", "only", "come", "its", "over", "think", "also", "back", "after", "use", "two", "how", "our", "work", "first", "well", "way", "even", "new", "want", "because", "any", "these", "give", "day", "most", "us" } },
+            {"Code", new List<string>() } // Для "Code" немає слів для режиму "Окремі слова"
         };
 
-        public string GetRandomText(string language, string textMode = "Випадкові слова")
+        private readonly Dictionary<string, List<string>> _hardcodedFullTextsByLanguage = new()
         {
-            if (!_textSamplesByLanguage.ContainsKey(language))
+            {"Українська", new List<string>
             {
-                language = "English";
-            }
-
-            List<string>? samples = _textSamplesByLanguage[language];
-
-            if (samples != null && samples.Count > 0)
+                "Рідна мова - це скарб, який потрібно берегти і шанувати. У ній мудрість віків і краса слова, що відображає душу народу. Не забуваймо своє коріння, адже воно живить нашу ідентичність. Природа України вражає своєю красою та різноманітністю ландшафтів. Карпати, Чорне море, безмежні степи - у нас є все для натхнення. Бережімо нашу планету, щоб зберегти цю красу для майбутніх поколінь. Київ - серце України, місто з багатою історією та культурою, що сягає глибини століть. Золоті ворота, Софійський собор, Андріївський узвіз - це лише деякі з його архітектурних та духовних перлин. Леся Українка - видатна українська поетеса і письменниця, чия творчість є невичерпним джерелом мудрості та патріотизму. Її поезія надихає та вражає своєю глибиною та силою духу. Тарас Шевченко - великий український поет і художник, чий \"Кобзар\" став символом національного відродження та боротьби за свободу. Українська кухня славиться своїми смачними та різноманітними стравами, які відображають багату історію та традиції нашого народу.",
+                "Програмування - це мистецтво, яке потребує практики та творчості. Алгоритми є основою будь-якої складної програми, визначаючи її ефективність та логіку. Вивчення нових технологій ніколи не зупиняється, постійно відкриваючи нові горизонти. Чистий код завжди виглядає так, ніби його написав хтось, хто дбає про нього. Спочатку розв'яжи проблему, потім напиши код. Простота - запорука надійності. Будь-який дурень може написати код, який зрозуміє комп'ютер. Хороші програмісти пишуть код, який зрозуміють люди. Кращий спосіб передбачати майбутнє - це створити його. Технологія - це все, що не було, коли ти народився. Найважливіше в спілкуванні - це почути те, що не було сказано. Говорити легко, покажи мені код. Майбутнє належить тим, хто вірить у красу своєї мрії. Не бійтеся робити помилки, адже на них вчаться. Програмуйте так, ніби людина, яка буде підтримувати ваш код, - це озброєний психопат, який знає, де ви живете. Тестуйте свій код, інакше це зроблять ваші користувачі."
+            }},
+            {"English", new List<string>
             {
-                return samples[_random.Next(samples.Count)];
-            }
-            return "Не вдалося завантажити текст.";
+                "Programming is an art that requires practice and creativity. Algorithms are the foundation of any complex program, determining its efficiency and logic. Learning new technologies never stops, constantly opening new horizons. Clean code always looks like someone who cares about it wrote it. First solve the problem, then write the code. Simplicity is the key to reliability. Any fool can write code that a computer understands. Good programmers write code that people understand. The best way to predict the future is to create it. Technology is everything that didn't exist when you were born. The most important thing in communication is to hear what was not said. It's easy to talk, show me the code. The future belongs to those who believe in the beauty of their dreams. Don't be afraid to make mistakes, because you learn from them. Program as if the person who will maintain your code is an armed psychopath who knows where you live. Test your code, otherwise your users will.",
+                "The quick brown fox jumps over the lazy dog. This sentence is famous for containing all the letters of the English alphabet. It is often used to test typewriters, keyboards, and fonts. The phrase is a pangram. Another common pangram is \"Pack my box with five dozen liquor jugs.\" These short sentences are useful for quick checks of text rendering and input devices."
+            }},
+            {"Code", new List<string> // ЗМІНЕНО: Код перетворено на послідовний текст
+            {
+                TextProvider.FormatCodeAsSingleLine("public static void Main(string[] args)\n{\n    Console.WriteLine(\"Hello, World!\");\n    for (int i = 0; i < 10; i++)\n    {\n        Console.WriteLine($\"Count: {i}\");\n    }\n}"),
+                TextProvider.FormatCodeAsSingleLine("function factorial(n) {\n    if (n === 0) {\n        return 1;\n    }\n    return n * factorial(n - 1);\n}\nconsole.log(factorial(5)); // Output: 120")
+            }}
+        };
+
+        private Random _random = new Random();
+
+        public List<string> GetAvailableLanguages()
+        {
+            return _hardcodedFullTextsByLanguage.Keys.ToList();
         }
 
-        private string ShuffleWords(string text)
+        public string GetRandomText(string language, string textMode)
         {
-            string[] words = text.Split(new[] { ' ', '.', ',', ';', ':', '!', '?' }, StringSplitOptions.RemoveEmptyEntries);
-            List<string> wordList = words.ToList();
-            int n = wordList.Count;
-            for (int i = n - 1; i > 0; i--)
+            // Simplified language and mode checks
+            if (string.IsNullOrEmpty(language) || string.IsNullOrEmpty(textMode))
             {
-                int j = _random.Next(i + 1);
-                (wordList[i], wordList[j]) = (wordList[j], wordList[i]);
+                return "Не вдалося завантажити текст: невідома мова або режим.";
             }
-            return string.Join(" ", wordList);
+
+            // ЗМІНЕНО: Додано спеціальну перевірку для мови "Code" та режиму "Окремі слова"
+            if (language == "Code" && textMode == "Окремі слова")
+            {
+                return "Для мови \"Code\" немає можливості вибирати режим тексту \"Окремі слова\".";
+            }
+
+
+            if (textMode == "Окремі слова")
+            {
+                if (_hardcodedSeparateWordsByLanguage.TryGetValue(language, out var words) && words.Count > 0)
+                {
+                    int startIndex = _random.Next(0, words.Count - Math.Min(50, words.Count));
+                    int count = Math.Min(50, words.Count - startIndex);
+                    return string.Join(" ", words.Skip(startIndex).Take(count));
+                }
+                else
+                {
+                    // Цей рядок залишаємо, він спрацює для інших мов, де справді немає достатньо слів
+                    return "Немає достатньо слів для режиму 'Окремі слова' для обраної мови.";
+                }
+            }
+            else // Assume it's "Цілі абзаци"
+            {
+                if (_hardcodedFullTextsByLanguage.TryGetValue(language, out var fullTexts) && fullTexts.Count > 0)
+                {
+                    return fullTexts[_random.Next(fullTexts.Count)];
+                }
+                else
+                {
+                    return "Не вдалося завантажити текст для обраної мови та режиму.";
+                }
+            }
         }
 
-        public List<string> GetAvailableLanguages() => new(_textSamplesByLanguage.Keys);
+        // ЗМІНЕНО: Метод став статичним
+        private static string FormatCodeAsSingleLine(string code)
+        {
+            // Замінюємо переноси рядків на пробіли
+            string result = code.Replace("\n", " ");
+            // Замінюємо кілька пробілів на один пробіл
+            result = Regex.Replace(result, @"\s+", " ").Trim();
+            return result;
+        }
     }
 }

@@ -18,7 +18,7 @@ namespace EasyType.Views
             _textRenderer = new TextRenderer(DisplayText);
             _viewModel.PropertyChanged += ViewModel_PropertyChanged;
             UpdateDisplayText();
-            InputText.Focus(); // Встановлюємо фокус на поле введення при запуску
+            InputText.Focus();
         }
 
         private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)

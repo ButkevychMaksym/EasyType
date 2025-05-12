@@ -20,12 +20,12 @@ namespace EasyType.ViewModels
         private string _userInput = string.Empty;
         private int _currentPosition;
         private bool _isLastCharCorrect;
-        private string _displayText = "Натисніть 'Старт' щоб почати."; // Початковий текст
+        private string _displayText = "Натисніть 'Старт' щоб почати.";
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public AppState AppState => _appState;
-        public List<string> TextModes { get; } = new() { "Випадкові слова", "Повний текст" }; // Список режимів тексту
+        public List<string> TextModes { get; } = new() { "Окремі слова", "Цілі абзаци" };
 
         public ICommand StartCommand { get; }
         public ICommand ResetCommand { get; }
@@ -35,7 +35,7 @@ namespace EasyType.ViewModels
         {
             _appState = new AppState();
             _textProvider = new TextProvider();
-            _history = new TrainingHistory();
+            _history = new TrainingHistory(); // Переконайтеся, що TrainingHistory існує
 
             StartCommand = new RelayCommand(_ => StartTest(), _ => !_appState.IsActive);
             ResetCommand = new RelayCommand(_ => ResetTest(), _ => _appState.IsActive || _appState.RemainingTime < _appState.TestDurationSeconds);
@@ -44,7 +44,7 @@ namespace EasyType.ViewModels
             _timer.Interval = TimeSpan.FromSeconds(1);
             _timer.Tick += Timer_Tick;
 
-            _appState.PropertyChanged += AppState_PropertyChanged; // Підписуємося на зміни AppState
+            _appState.PropertyChanged += AppState_PropertyChanged;
         }
 
         public string UserInput
@@ -79,7 +79,11 @@ namespace EasyType.ViewModels
 
         private void AppState_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            // Тут можна обробляти зміни AppState, якщо потрібно оновити відображення
+
+            if (e.PropertyName == nameof(AppState.WPM) || e.PropertyName == nameof(AppState.Accuracy) || e.PropertyName == nameof(AppState.RemainingTime))
+            {
+                OnPropertyChanged(nameof(AppState));
+            }
         }
 
         private void Timer_Tick(object? sender, EventArgs e)
@@ -97,7 +101,7 @@ namespace EasyType.ViewModels
             var settingsWindow = new SettingsWindow(_appState, _textProvider);
             if (settingsWindow.ShowDialog() == true)
             {
-                // Застосування налаштувань відбувається безпосередньо через прив'язку (Binding)
+                // Можливо, оновити відображення, якщо налаштування впливають на поточний тест
                 (StartCommand as RelayCommand)?.RaiseCanExecuteChanged();
                 (ResetCommand as RelayCommand)?.RaiseCanExecuteChanged();
             }
@@ -111,16 +115,16 @@ namespace EasyType.ViewModels
             _appState.CorrectChars = 0;
             _appState.IncorrectChars = 0;
             _isLastCharCorrect = true;
-            _appState.RemainingTime = _appState.TestDurationSeconds; // Скидання таймера перед початком
+            _appState.RemainingTime = _appState.TestDurationSeconds;
 
             _appState.CurrentText = _textProvider.GetRandomText(_appState.SelectedLanguage, _appState.SelectedTextMode);
             if (string.IsNullOrEmpty(_appState.CurrentText))
             {
-                _appState.CurrentText = "Не вдалося завантажити текст.";
+                _appState.CurrentText = "Не вдалося завантажити текст."; // Fallback if TextProvider returns empty
             }
 
             UserInput = string.Empty;
-            DisplayText = _appState.CurrentText; // Оновлення DisplayText при старті
+            DisplayText = _appState.CurrentText;
 
             (StartCommand as RelayCommand)?.RaiseCanExecuteChanged();
             (ResetCommand as RelayCommand)?.RaiseCanExecuteChanged();
@@ -139,8 +143,13 @@ namespace EasyType.ViewModels
             var result = new TrainingResult(_appState);
             _history.AddResult(result);
 
-            MessageBox.Show($"Тест завершено!\nWPM: {_appState.WPM:0}\nТочність: {_appState.Accuracy:0}%",
-                "Результати тесту", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            var resultWindow = new ResultWindow(result);
+            if (Application.Current.MainWindow != null)
+            {
+                resultWindow.Owner = Application.Current.MainWindow;
+            }
+            resultWindow.ShowDialog();
 
             (StartCommand as RelayCommand)?.RaiseCanExecuteChanged();
             (ResetCommand as RelayCommand)?.RaiseCanExecuteChanged();
@@ -154,7 +163,7 @@ namespace EasyType.ViewModels
             UserInput = string.Empty;
             _currentPosition = 0;
             _isLastCharCorrect = true;
-            DisplayText = "Натисніть 'Старт' щоб почати."; // Оновлення DisplayText при скиданні
+            DisplayText = "Натисніть 'Старт' щоб почати.";
 
             (StartCommand as RelayCommand)?.RaiseCanExecuteChanged();
             (ResetCommand as RelayCommand)?.RaiseCanExecuteChanged();
@@ -167,6 +176,7 @@ namespace EasyType.ViewModels
                 return;
 
             string targetText = _appState.CurrentText;
+
 
             if (UserInput.Length < _currentPosition)
             {
@@ -183,17 +193,28 @@ namespace EasyType.ViewModels
                 {
                     _isLastCharCorrect = UserInput[i] == targetText[i];
 
-                    if (_isLastCharCorrect)
-                        _appState.CorrectChars++;
-                    else
-                        _appState.IncorrectChars++;
+
+                    if (UserInput.Length > _currentPosition)
+                    {
+                        if (_isLastCharCorrect)
+                            _appState.CorrectChars++;
+                        else
+                            _appState.IncorrectChars++;
+                    }
                 }
 
                 _currentPosition = UserInput.Length;
                 OnPropertyChanged(nameof(DisplayText));
             }
+            else if (UserInput.Length > targetText.Length)
+            {
+                // Дозволити користувачу набирати більше символів, ніж у тексті,
+                // але не враховувати їх у підрахунку correct/incorrect.
+                OnPropertyChanged(nameof(DisplayText));
+            }
 
-            if (UserInput.Length >= targetText.Length)
+
+            if (UserInput.Length >= targetText.Length && _appState.IsActive)
             {
                 EndTest();
             }

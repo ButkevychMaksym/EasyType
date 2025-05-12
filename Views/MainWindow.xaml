@@ -89,7 +89,7 @@
             <Button Content="Старт" Style="{StaticResource ButtonStyle}"
                     Background="#98C379" Command="{Binding StartCommand}"
                     IsEnabled="{Binding AppState.IsActive, Converter={StaticResource InverseBoolConverter}}"/>
-            <Button Content="Скинути" Style="{StaticResource ButtonStyle}"
+            <Button Content="Стоп" Style="{StaticResource ButtonStyle}"
                     Background="#E06C75" Command="{Binding ResetCommand}"
                     IsEnabled="{Binding AppState.IsActive}"/>
             <Button Content="Налаштування" Style="{StaticResource ButtonStyle}"
